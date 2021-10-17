@@ -1,0 +1,166 @@
+{
+	"info": {
+		"_postman_id": "af91fe8e-bf06-403e-b41e-b2963370c42e",
+		"name": "Usuarios",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "getAll",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:80/api/usuarios",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "80",
+					"path": [
+						"api",
+						"usuarios"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "post",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"nombre\": \"Otro\",\n    \"apellido\": \"prrueba\",\n    \"email\": \"test@mail.com\",\n    \"password\": \"1123\",\n    \"cuit\": \"331231239\",\n    \"rol\": \"comun\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:80/api/usuarios",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "80",
+					"path": [
+						"api",
+						"usuarios"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getById",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:80/api/usuarios/616a346e8617d29c8c44f495",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "80",
+					"path": [
+						"api",
+						"usuarios",
+						"616a346e8617d29c8c44f495"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "put",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"nombre\": \"Javier Eugenio\",\n    \"apellido\": \"Mendoza Godani\",\n    \"email\": \"javier.mendoza@davinci.edu.ar\",\n    \"password\": \"123\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:80/api/usuarios/616a346e8617d29c8c44f495",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "80",
+					"path": [
+						"api",
+						"usuarios",
+						"616a346e8617d29c8c44f495"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "patch",
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t \"email\": \"javier.mendoza@davinci.edu\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:80/api/usuarios/616a346e8617d29c8c44f495",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "80",
+					"path": [
+						"api",
+						"usuarios",
+						"616a346e8617d29c8c44f495"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:80/api/usuarios/616ba0430adaf9b3ef86218e",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "80",
+					"path": [
+						"api",
+						"usuarios",
+						"616ba0430adaf9b3ef86218e"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

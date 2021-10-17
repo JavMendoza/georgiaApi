@@ -1,0 +1,82 @@
+{
+	"info": {
+		"_postman_id": "e38a2df5-be36-4c05-938c-a050d9d4e023",
+		"name": "Pedidos Interaction",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "post",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \n\t\"usuarioId\": \"616a346e8617d29c8c44f495\",\n\t\"tipo_pedido\": {\n\t\t\"id\": \"616b2cc15e49156a590df637\",\n\t\t\"nombre\": \"recarga\"\n\t},\n\t\"estado_pedido\": {\n\t\t\"id\": \"616b2d085e49156a590df639\",\n\t\t\"nombre\": \"Pendiente de revision por cliente\"\n\t},\n\t\"matafuegos\": [\n\t\t{\n\t\t\t\"id\": \"616b30025e49156a590df642\",\n\t\t\t\"codigo\": \"123a\",\n\t\t    \"fecha_vencimiento\": \"2021-10-09\",\n\t\t    \"usuario\": \"616a346e8617d29c8c44f495\",\n\t\t    \"local\": \"616b2df15e49156a590df640\"\n\t\t}\n\t],\n\t\"fecha_retiro\": \"2021-12-11\",\n\t\"fecha_entrega\": \"2021-12-20\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:80/api/pedidos/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "80",
+					"path": [
+						"api",
+						"pedidos",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getAll",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:80/api/pedidos",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "80",
+					"path": [
+						"api",
+						"pedidos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getById",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:80/api/pedidos/616b949e8616aac5c90ef471",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "80",
+					"path": [
+						"api",
+						"pedidos",
+						"616b949e8616aac5c90ef471"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
