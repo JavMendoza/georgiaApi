@@ -1,7 +1,7 @@
 import dao from '../model/login.dao.js'
 
 export function findUser(req, res){
-    dao.find(req.body)
+    dao.findUser(req.body)
     .then(function(usuario){
         res.status(200).json(usuario)
     })
