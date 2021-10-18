@@ -7,7 +7,7 @@ export async function findAll() {
     })
 }
 
-async function getMatafuegosFullDetails(matafuegos, db) {
+/* async function getLocalRelatedWithMatafuego(matafuegos, db) {
     const localesArrayIds = matafuegos.map(matafuego => mongodb.ObjectId(matafuego.local));
         
     const locales = await db.collection("locales").find({ _id: { $in: localesArrayIds }}).toArray();
@@ -19,6 +19,11 @@ async function getMatafuegosFullDetails(matafuegos, db) {
             local,
         }
     });
+} */
+
+async function getMatafuegosFullDetails(matafuegos, db) {
+    const matafuegosObjectIdsArr = matafuegos.map(matafuego => mongodb.ObjectId(matafuego));
+    return await db.collection("matafuegos").find({ _id: { $in: matafuegosObjectIdsArr } }).toArray();
 }
 
 export async function insert(entity) {
@@ -44,17 +49,29 @@ export async function insert(entity) {
             }
         */
 
-        const { usuarioId, fecha_retiro, fecha_entrega, matafuegos, ...rest } = entity; 
+        const { 
+            usuarioId, 
+            matafuegos,
+            fecha_retiro, 
+            fecha_entrega,
+            ...rest 
+        } = entity; 
+        
+        let mockRetiro = fecha_retiro ? new Date(fecha_retiro): new Date();
+        let mockEntrega = fecha_entrega ? new Date(fecha_entrega): new Date();
 
-        const user = await db.collection("usuarios").findOne({ _id: mongodb.ObjectId(usuarioId) });
+        mockRetiro.setDate(mockRetiro.getDate() + 2);
+        mockEntrega.setDate(mockEntrega.getDate() + 4);
+
+        const usuario = await db.collection("usuarios").findOne({ _id: mongodb.ObjectId(usuarioId) });
 
         const matafuegosFullDetails = await getMatafuegosFullDetails(matafuegos, db);
         
         const pedidoFullDetails = {
-            usuario: user,
+            usuario,
             fecha_pedido: new Date(),
-            fecha_retiro: new Date(fecha_retiro),
-            fecha_entrega: new Date(fecha_entrega),
+            fecha_retiro: mockRetiro,
+            fecha_entrega: mockEntrega,
             matafuegos: matafuegosFullDetails,
             ...rest
         }
