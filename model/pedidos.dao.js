@@ -57,11 +57,22 @@ export async function insert(entity) {
             ...rest 
         } = entity; 
         
-        let mockRetiro = fecha_retiro ? new Date(fecha_retiro): new Date();
-        let mockEntrega = fecha_entrega ? new Date(fecha_entrega): new Date();
+        let mockRetiro;
+        let mockEntrega;
 
-        mockRetiro.setDate(mockRetiro.getDate() + 2);
-        mockEntrega.setDate(mockEntrega.getDate() + 4);
+        if (fecha_retiro) {
+            mockRetiro = new Date(fecha_retiro);
+        } else {
+            mockRetiro = new Date();
+            mockRetiro.setDate(mockRetiro.getDate() + 2);
+        }
+
+        if (fecha_entrega) {
+            mockEntrega = new Date(fecha_entrega);
+        } else {
+            mockEntrega = new Date();
+            mockEntrega.setDate(mockEntrega.getDate() + 4);
+        }
 
         const usuario = await db.collection("usuarios").findOne({ _id: mongodb.ObjectId(usuarioId) });
 
