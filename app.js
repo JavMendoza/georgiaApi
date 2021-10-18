@@ -28,7 +28,7 @@ app.use('/api/matafuegos', matafuegosRouter)
 
 app.use('/api/locales', localesRouter)
 
-app.listen(80, function () {
+app.listen(8080, function () {
     console.log("Server ON!")
 })
 
