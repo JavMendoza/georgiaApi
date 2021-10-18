@@ -56,7 +56,7 @@ export async function deleteById(id) {
 
 export async function findPedidosByUserId(userId) {
     return conexion(async function(db){
-        return await db.collection("pedidos").find({ "usuario._id": userId }).toArray();
+        return await db.collection("pedidos").find({ "usuario._id": mongodb.ObjectId(userId) }).toArray();
     })
 }
 
