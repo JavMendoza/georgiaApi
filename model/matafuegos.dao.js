@@ -9,8 +9,16 @@ export async function findAll() {
 
 export async function insert(entity) {
     return conexion(async function(db){
-        await db.collection("matafuegos").insertOne(entity)
-        return entity
+        const { fecha_vencimiento, ...rest } = entity;
+        const entityToSave = {
+            fecha_vencimiento: new Date(fecha_vencimiento),
+            ...rest
+        }
+        const result = await db.collection("matafuegos").insertOne(entityToSave);
+        return {
+            ...entityToSave,
+            _id: result.insertedId
+        }
     })
 }
 
