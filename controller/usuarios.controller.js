@@ -13,10 +13,10 @@ export function findAll(req, res){
 export function create(req, res){
     dao.insert(req.body)
     .then(function(usuario){
-        res.status(200).json(usuario)
+        res.status(200).json(usuario);
     })
-    .catch(function(err){
-        res.status(500).json({err: 500, msg: err.message })
+    .catch(function(err) {
+        res.status(err.code).json({ err: err.code, msg: err.message })
     })
 }
 

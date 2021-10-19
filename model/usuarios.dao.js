@@ -1,5 +1,6 @@
 import mongodb from 'mongodb'
-import { conexion } from './database.js'
+import { conexion } from './database.js';
+import CustomError from '../utils/CustomError.js'; 
 
 export async function findAll() {
     return conexion(async function(db){
@@ -8,11 +9,18 @@ export async function findAll() {
 }
 
 export async function insert(user) {
-    return conexion(async function(db){
+    return conexion(async function(db) {
         const { password, ...userDetails } = user; 
-        const usuarioResult = await db.collection("usuarios").insertOne(userDetails);
+        const usuarioAlreadyCreated = await db.collection("usuarios").findOne({ $or: [{ email: userDetails.email }, { cuit: userDetails.cuit }] });
+				if (usuarioAlreadyCreated) {
+					return Promise.reject(new CustomError(409, 'Usuario existente'));		
+        }
+				const usuarioResult = await db.collection("usuarios").insertOne(userDetails);
         await db.collection("inicio_sesion").insertOne({ usuario_id: usuarioResult.insertedId.toString(), email: userDetails.email, password });
-        return userDetails;
+        return {
+					...userDetails,
+					_id: usuarioResult.insertedId
+			}
     })
 }
 
@@ -56,7 +64,7 @@ export async function deleteById(id) {
 
 export async function findPedidosByUserId(userId) {
     return conexion(async function(db){
-        return await db.collection("pedidos").find({ "usuario._id": mongodb.ObjectId(userId) }).toArray();
+        return await db.collection("pedidos").find({ "usuario._id": mongodb.ObjectId(userId), "deleted": { $ne: true } }).toArray();
     })
 }
 
