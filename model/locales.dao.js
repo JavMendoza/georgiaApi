@@ -47,21 +47,13 @@ export async function deleteById(id) {
     })
 }
 
-export async function findMatafuegosByLocalId(localId) {
-    return conexion(async function(db){
-        return await db.collection("matafuegos").find({ local: localId }).toArray();
-    })
-}
-
-
 export default {
     findAll,
     insert,
     findById,
     replaceById,
     updateById,
-    deleteById,
-    findMatafuegosByLocalId,
+    deleteById
 }
 
 

@@ -1,85 +1,87 @@
 import mongodb from 'mongodb'
 import { conexion } from './database.js'
 
-export async function findAll() {
+export async function findAll(filter) {
     return conexion(async function(db){
-        return await db.collection("pedidos").find({ deleted: { $ne: true } }).toArray()
+        let result;
+        const filterSplitted = filter ? filter.split(":") : '';
+        if (filterSplitted) {
+            result = await db.collection("pedidos").find({ deleted: { $ne: true }, "estado.sub_estado": filterSplitted[1] }).toArray();
+        } else {
+            result = await db.collection("pedidos").find({ deleted: { $ne: true } }).toArray();
+        }
+        return result;
     })
 }
 
-/* async function getLocalRelatedWithMatafuego(matafuegos, db) {
-    const localesArrayIds = matafuegos.map(matafuego => mongodb.ObjectId(matafuego.local));
+async function getLocalRelatedWithMatafuegos(matafuegos, db) {
+    const localesArrayIds = matafuegos.reduce((acc, matafuego) => {
+        if (matafuego.local_id) {
+            acc.push(mongodb.ObjectId(matafuego.local_id));
+        }
+        return acc;
+    }, []);
         
     const locales = await db.collection("locales").find({ _id: { $in: localesArrayIds }}).toArray();
 
     return matafuegos.map(matafuego => {
-        const local = locales.find(local => local._id.toString() === matafuego.local);
+        const { local_id, ...rest } = matafuego;
+        const local = local_id && locales.find(local => local_id.equals(local._id));
         return {
-            ...matafuego,
+            ...rest,
             local,
         }
     });
-} */
+}
 
-async function getMatafuegosFullDetails(matafuegos, db) {
+async function getMatafuegosDetails(matafuegos, db) {
     const matafuegosObjectIdsArr = matafuegos.map(matafuego => mongodb.ObjectId(matafuego));
     return await db.collection("matafuegos").find({ _id: { $in: matafuegosObjectIdsArr } }).toArray();
 }
 
+function mockFecha (fecha, daysInTheFuture) {
+    let mockFecha;
+    if (fecha) {
+        mockFecha = new Date(fecha);
+    } else {
+        mockFecha = new Date();
+        mockFecha.setDate(mockFecha.getDate() + daysInTheFuture);
+    }
+    return mockFecha;
+}
+
 export async function insert(entity) {
     return conexion(async function(db) {
-        /*
-            const { userId, tipo_pedido, estado_pedido, fecha_retiro, fecha_entrega,  ...rest } = entity;
-        
-            const user = await db.collection("usuarios").findOne({ _id: mongodb.ObjectId(userId) });
-            const tipo = await db.collection("tipo_pedidos").findOne({ nombre: tipo_pedido });
-            const estado = await db.collection("estado_pedidos").findOne({ nombre: estado_pedido });
-
-            await db.collection("matafuegos").find({ _id: { $in:  } }).toArray(); 
-        
-
-            const pedidoFullDetails = {
-                usuario: user,
-                tipo_pedido: tipo,
-                estado_pedido: estado,
-                fecha_pedido: new Date(),
-                fecha_retiro: new Date(fecha_retiro),
-                fecha_entrega: new Date(fecha_entrega),
-                ...rest
-            }
-        */
-
         const { 
-            usuarioId, 
+            cliente_id,
+            repartidor_id, 
             matafuegos,
+            tipo,
+            estado,
             fecha_retiro, 
             fecha_entrega,
             ...rest 
         } = entity; 
+        let repartidor = null;
+
+        const tipo_pedido = await db.collection("tipo_pedidos").findOne({ nombre: tipo });
+        const estado_pedido = await db.collection("estado_pedidos").findOne({ nombre: estado });
         
-        let mockRetiro;
-        let mockEntrega;
+        const mockRetiro = mockFecha(fecha_retiro, 2);
+        const mockEntrega = mockFecha(fecha_entrega, 4);
 
-        if (fecha_retiro) {
-            mockRetiro = new Date(fecha_retiro);
-        } else {
-            mockRetiro = new Date();
-            mockRetiro.setDate(mockRetiro.getDate() + 2);
+        const cliente = await db.collection("usuarios").findOne({ _id: mongodb.ObjectId(cliente_id) });
+        if (repartidor_id) {
+            repartidor = await db.collection("usuarios").findOne({ _id: mongodb.ObjectId(repartidor_id) });
         }
+        const matafuegosDetails = await getMatafuegosDetails(matafuegos, db);
+        const matafuegosFullDetails = await getLocalRelatedWithMatafuegos(matafuegosDetails, db);
 
-        if (fecha_entrega) {
-            mockEntrega = new Date(fecha_entrega);
-        } else {
-            mockEntrega = new Date();
-            mockEntrega.setDate(mockEntrega.getDate() + 4);
-        }
-
-        const usuario = await db.collection("usuarios").findOne({ _id: mongodb.ObjectId(usuarioId) });
-
-        const matafuegosFullDetails = await getMatafuegosFullDetails(matafuegos, db);
-        
         const pedidoFullDetails = {
-            usuario,
+            cliente,
+            repartidor,
+            tipo: tipo_pedido,
+            estado: estado_pedido,
             fecha_pedido: new Date(),
             fecha_retiro: mockRetiro,
             fecha_entrega: mockEntrega,
@@ -109,10 +111,17 @@ export async function replaceById(id, entity) {
 
 export async function updateById(id, field) {
     return conexion(async function(db){
-        return await db.collection("pedidos").updateOne(
+        const estado = await db.collection("estado_pedidos").findOne({ nombre: field.estado });
+        await db.collection("pedidos").updateOne(
             { _id: mongodb.ObjectId(id)},
-            { $set: field }
+            { $set: { 
+                estado,
+                fecha_retiro: new Date(field.fecha_retiro),
+                fecha_entrega: new Date(field.fecha_entrega),
+            } }
         )
+
+        return await db.collection("pedidos").findOne({ _id: mongodb.ObjectId(id)})
     })
 }
 

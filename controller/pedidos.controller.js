@@ -1,7 +1,7 @@
 import dao from '../model/pedidos.dao.js'
 
 export function findAll(req, res){
-    dao.findAll()
+    dao.findAll(req.query.filter)
     .then(function(pedidos) {
         res.status(200).json(pedidos)
     })

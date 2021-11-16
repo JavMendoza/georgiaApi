@@ -16,7 +16,11 @@ export function create(req, res){
         res.status(200).json(matafuego)
     })
     .catch(function(err){
-        res.status(500).json({err: 500, msg: err.message })
+        if (err.code === 404) {
+            res.status(err.code).json({err: err.code, msg: err.message })
+        } else {
+            res.status(500).json({err: 500, msg: err.message })
+        }
     })
 }
 
@@ -26,7 +30,11 @@ export function findById(req, res) {
         res.status(200).json(matafuego)
     })
     .catch(function(err) {
-        res.status(500).json({err: 500, msg: err.message })
+        if (err.code === 404) {
+            res.status(err.code).json({err: err.code, msg: err.message })
+        } else {
+            res.status(500).json({err: 500, msg: err.message })
+        }
     })
 }
 
