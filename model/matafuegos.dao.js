@@ -64,15 +64,20 @@ export async function insert(entity) {
 }
 
 export async function findById(id) {
-    return conexion(async function(db){
+    return conexion(async function(db) {
         const matafuego = await db.collection("matafuegos").findOne({ _id: mongodb.ObjectId(id)});
+        const usuario = await db.collection("usuarios").findOne({ _id: mongodb.ObjectId(matafuego.usuario_id) });
         if (!matafuego) {
             throw {
                 code: 404,
                 message: `No se encontro un matafuego con el id ${id}`
             }
         }
-        return matafuego;
+        const { usuario_id, ...rest } = matafuego;
+        return {
+            ...rest,
+            usuario
+        };
     })
 }
 

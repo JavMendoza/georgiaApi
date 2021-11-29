@@ -1,7 +1,8 @@
-import dao from '../model/usuarios.dao.js'
+import dao from '../model/usuarios.dao.js';
+import { generate } from "../middleware/tokenValidator.js";
 
 export function findAll(req, res){
-    dao.findAll()
+    dao.findAll(req.query.filter)
     .then(function(usuarios) {
         res.status(200).json(usuarios)
     })
@@ -12,11 +13,19 @@ export function findAll(req, res){
 
 export function create(req, res){
     dao.insert(req.body)
-    .then(function(usuario){
-        res.status(200).json(usuario);
+    .then(function(usuario) {
+        const token = generate(usuario);
+        res.status(200).json({
+            token,
+            usuario
+        });
     })
     .catch(function(err) {
-        res.status(err.code).json({ err: err.code, msg: err.message })
+        if (err.code) {
+            res.status(err.code).json({ err: err.code, msg: err.message });
+        } else {
+            res.status(500).json({err: 500, msg: err.message })
+        }
     })
 }
 

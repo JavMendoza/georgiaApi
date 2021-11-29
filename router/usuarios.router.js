@@ -1,23 +1,24 @@
 import express from 'express'
 import controller from '../controller/usuarios.controller.js'
+import { validator } from '../middleware/tokenValidator.js'
 
 const router = express.Router()
 
 router.route('/')
-.get(controller.findAll)
+.get(validator, controller.findAll)
 .post(controller.create)
 
 router.route('/:id')
-.get(controller.findById)
-.put(controller.putById)
-.patch(controller.patchById)
-.delete(controller.deleteById)
+.get(validator, controller.findById)
+.put(validator, controller.putById)
+.patch(validator, controller.patchById)
+.delete(validator, controller.deleteById)
 
 router.route('/:id/pedidos')
-.get(controller.findPedidosFromUser);
+.get(validator, controller.findPedidosFromUser);
 
 router.route('/:id/matafuegos')
-.get(controller.findMatafuegosFromUser);
+.get(validator, controller.findMatafuegosFromUser);
 
 
 export default router
