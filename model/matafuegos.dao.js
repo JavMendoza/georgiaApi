@@ -3,7 +3,7 @@ import { conexion } from './database.js'
 
 export async function findAll() {
     return conexion(async function(db){
-        return await db.collection("matafuegos").find({}).toArray()
+        return await db.collection("matafuegos").find({ deleted: { $ne: true } }).toArray()
     })
 }
 

@@ -8,9 +8,9 @@ export async function findAll(filter) {
         let result;
         const filterSplitted = filter ? filter.split(":") : '';
         if (filterSplitted) {
-            result = await db.collection("usuarios").find({ "rol": filterSplitted[1] }).toArray();
+            result = await db.collection("usuarios").find({ deleted: { $ne: true }, "rol": filterSplitted[1] }).toArray();
         } else {
-            result = await db.collection("usuarios").find({}).toArray()
+            result = await db.collection("usuarios").find({ deleted: { $ne: true } }).toArray()
         }
         return result;
     })
