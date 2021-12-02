@@ -8,7 +8,7 @@ export async function conexion(callback){
 
     const result = await callback(client.db(config.db.dbName))
 
-    await client.close()
+    // await client.close()
 
     return result
 }
